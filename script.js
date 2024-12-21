@@ -1,32 +1,34 @@
 const form = document.getElementById('numberForm');
 
-form?.addEventListener('submit', async (e) => {
-    e.preventDefault();
+document.addEventListener("DOMContentLoaded", function () {
+  const phoneForm = document.getElementById("phoneForm");
+  if (phoneForm) {
+      phoneForm.addEventListener("submit", function (event) {
+          event.preventDefault();
+          const phoneNumber = document.getElementById("phoneNumber").value;
+          const errorMessage = document.getElementById("errorMessage");
 
-    const number = document.getElementById('phoneNumber').value;
-
-    if (!/^\d{11}$/.test(number)) {
-        document.getElementById('error').innerText = 'Number must be exactly 11 digits.';
-        return;
-    }
-
-    try {
-        const res = await fetch('/check-number', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ number }),
-        });
-
-        const data = await res.json();
-
-        if (data.success) {
-            window.location.href = `/success.html?number=${number}&discount=${data.discount}`;
-        } else {
-            document.getElementById('error').innerText = data.message;
-        }
-    } catch (error) {
-        document.getElementById('error').innerText = 'An error occurred. Please try again later.';
-    }
+          if (/^\d{11}$/.test(phoneNumber)) {
+              fetch('/submit-phone', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ phoneNumber })
+              })
+              .then(response => {
+                  if (response.ok) {
+                      window.location.href = '/thanks.html';
+                  } else {
+                      errorMessage.textContent = 'Failed to save phone number. Try again.';
+                  }
+              });
+          } else {
+              errorMessage.textContent = 'Please enter a valid 11-digit phone number.';
+              console.log(document.getElementById("phoneForm"));
+          }
+      });
+  } else {
+      console.error('Element with id "phoneForm" not found!');
+  }
 });
 
 async function searchUser() {
