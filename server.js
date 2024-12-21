@@ -1,8 +1,11 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const bodyParser = require('body-parser');
+const dotenv = require('dotenv')
 const path = require('path');
 const app = express();
+
+dotenv.config({path: './config.env'});
 
 const port = process.env.PORT || 3000;
 
